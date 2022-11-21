@@ -1,0 +1,51 @@
+version: "3"
+services:
+  web:
+    build: ./web
+    container_name: web
+    ports:
+      - 80:80
+      - 443:443
+      - 4200:4200
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  api:
+    build: ./api
+    # command: bash -c "while true; do sleep 1; done"
+    command: "uvicorn src.main:app --host 0.0.0.0 --reload"
+    container_name: api
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api/:/app
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  db:
+    image: postgres:15.0-alpine
+    container_name: db
+    restart: unless-stopped
+    volumes:
+      - ./temp/:/var/lib/postgresql/data
+    ports:
+      - 5432:${POSTGRES_PORT}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
