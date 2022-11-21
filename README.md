@@ -12,5 +12,5 @@ Angular
 
 ## TODO
 
-[ ] - add scripts for alembic commands in the container
-[ ] - some arqs tweaks in back and front
+- [ ] - add scripts for alembic commands in the container
+- [ ] - some arqs tweaks in back and front
